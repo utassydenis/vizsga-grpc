@@ -1,0 +1,2 @@
+obj\Debug\net6.0\Protos/Vizsga.cs \
+obj\Debug\net6.0\Protos/VizsgaGrpc.cs: Protos/vizsga.proto

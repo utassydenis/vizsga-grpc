@@ -1,0 +1,16 @@
+{
+  "Version": 1,
+  "ProjectMap": {
+    "60a3d0de-90f5-475d-b1f0-a5b3b0122fdf": {
+      "ProjectGuid": "60a3d0de-90f5-475d-b1f0-a5b3b0122fdf",
+      "DisplayName": "VizsgaGRPC",
+      "ColorIndex": 0
+    },
+    "a2fe74e1-b743-11d0-ae1a-00a0c90fffc3": {
+      "ProjectGuid": "a2fe74e1-b743-11d0-ae1a-00a0c90fffc3",
+      "DisplayName": "Miscellaneous Files",
+      "ColorIndex": -1
+    }
+  },
+  "NextColorIndex": 1
+}

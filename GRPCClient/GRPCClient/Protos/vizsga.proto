@@ -1,0 +1,59 @@
+syntax = "proto3";
+
+option csharp_namespace = "VizsgaGRPC";
+
+package Vizsga;
+
+// The greeting service definition.
+service Vizsga {
+    rpc List(Empty) returns (stream Product) {} //Semmin se kell, product lista jön vissza 
+    rpc Add(Data) returns (Result) {} //product név, kód, ár és sessionid kell, nem jön vissza semmi
+    rpc Bid(BidProduct) returns (Result) {} //
+    rpc Modify(ModifyProduct) returns (Result) {} //session id, product kód, új ár kell, nem jön vissza semmi
+    rpc Delete(DeleteProduct) returns (Result) {} //session_id, product kód ,nem jön vissza semmi
+    rpc Login(User) returns (Session_Id){} //username és pwd kell , session id jön vissza
+    rpc Logout(Session_Id) returns (Result) {} //session id kell, nincs semmi vissza 
+    rpc Register(User) returns (Result){}
+}
+
+message Empty{}
+
+
+message User {
+    string name = 1;
+    string password = 2;
+}
+message Session_Id{
+    string id = 1;
+}
+message Result {
+    string success = 1;
+}
+message Data {
+    string name = 1;
+    string code = 2;
+    int32 price = 3;
+    string uid = 4;
+}
+message Product {
+    string name = 1;
+    string code = 2;
+    int32 cur_price = 3;
+    string username = 4; //ki rakta fel
+}
+message BidProduct {
+    string code = 1;
+    int32 price = 2;
+    string uid = 3; //session id
+}
+message ModifyProduct {
+    string code = 1;
+    int32 price = 2;
+    string uid = 3;
+}
+
+message DeleteProduct {
+    string code = 1;
+    string uid = 2;
+}
+
