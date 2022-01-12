@@ -10,10 +10,9 @@ service Vizsga {
     rpc Add(Data) returns (Result) {}
     rpc Bid(BidProduct) returns (Result) {}
     rpc Modify(ModifyProduct) returns (Result) {}
-    rpc Delete(DeleteProduct) returns (Result) {} //session_id, product kód ,nem jön vissza semmi
-    rpc Login(User) returns (Session_Id){} //username és pwd kell , session id jön vissza
-    rpc Logout(Session_Id) returns (Result) {} //session id kell, nincs semmi vissza 
-
+    rpc Delete(DeleteProduct) returns (Result) {}
+    rpc Login(User) returns (Session_Id){}
+    rpc Logout(Session_Id) returns (Result) {}
     rpc Register(User) returns (Result){}
 
 }
@@ -40,12 +39,12 @@ message Product {
     string name = 1;
     string code = 2;
     int32 cur_price = 3;
-    string username = 4; //ki rakta fel
+    string username = 4;
 }
 message BidProduct {
     string code = 1;
     int32 price = 2;
-    string uid = 3; //session id
+    string uid = 3;
 }
 message ModifyProduct {
     string code = 1;

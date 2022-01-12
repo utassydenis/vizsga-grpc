@@ -14,41 +14,10 @@ namespace GRPCClient
             InitializeComponent();
             this.FormClosing += logoutBtn_Click;
         }
-
         private void Form1_Load(object sender, EventArgs e)
         {
                 client = new Vizsga.VizsgaClient(channel);
         }
-
-        private void loginBtn_Click(object sender, EventArgs e)
-        {
-            if(userTxtBx.Text != "" || passTxtBx.Text != "")
-            {
-                try
-                {
-                    User user = new User();
-                    user.Name = userTxtBx.Text;
-                    user.Password = passTxtBx.Text;
-                    Session_Id tempuid = client.Login(user);
-                    connStringLbl.Text = tempuid.ToString();
-                    if (tempuid.ToString().Contains("No"))
-                    {
-                        resultLbl.Text = "Bejelentkezés sikertelen";
-                    }
-                    else
-                    {
-                        string temp = tempuid.ToString();
-                        uid = temp.Substring(9, 36);
-                    }
-                }
-                catch(RpcException x)
-                {
-                    resultLbl.Text = "Error. Server not found.";
-                }
-
-            }
-        }
-
         private async void listBtn_Click(object sender, EventArgs e)
         {
             try
@@ -72,11 +41,10 @@ namespace GRPCClient
             }
             catch (RpcException x)
             {
-                resultLbl.Text = "Error! Server not found";
+                resultLbl.Text = "RPC Szerver nem elérhetõ!";
             }
             
         }
-
         private void addBtn_Click(object sender, EventArgs e)
         {
             try
@@ -93,15 +61,14 @@ namespace GRPCClient
                 }
                 else
                 {
-                    resultLbl.Text = "Hibás ár.";
+                    resultLbl.Text = "Hibás ár. Minimum 1Ft";
                 }
             }
             catch (RpcException x)
             {
-                resultLbl.Text = "Error! Server not found";
+                resultLbl.Text = "RPC Szerver nem elérhetõ!";
             }
         }
-
         private void bidBtn_Click(object sender, EventArgs e)
         {
             try
@@ -126,42 +93,14 @@ namespace GRPCClient
                 }
                 else
                 {
-                    resultLbl.Text = "Hibás ár.";
+                    resultLbl.Text = "Hibás ár. Minimum 1Ft.";
                 }
             }
             catch (RpcException x)
             {
-                resultLbl.Text = "Error! Server not found";
+                resultLbl.Text = "RPC Szerver nem elérhetõ!";
             }
-
-
         }
-
-        private void logoutBtn_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                if (uid != null && !uid.Contains("No"))
-                {
-                    Session_Id s = new Session_Id();
-                    s.Id = uid;
-                    Result res = client.Logout(s);
-                    resultLbl.Text = res.ToString();
-                    connStringLbl.Text = res.ToString();
-                    uid = "N/A";
-                }
-                else
-                {
-                    resultLbl.Text = "Nincs bejelentkezve!";
-                }
-            }
-            catch(RpcException x)
-            {
-                resultLbl.Text = "Error! Server not found!";
-            }
-
-        }
-
         private void modifyBtn_Click(object sender, EventArgs e)
         {
             try
@@ -186,20 +125,18 @@ namespace GRPCClient
                         Result res = client.Modify(m);
                         resultLbl.Text = res.ToString();
                     }
-
                 }
                 else
                 {
-                    resultLbl.Text = "Hibás ár.";
+                    resultLbl.Text = "Hibás ár. Minimum 1Ft";
                 }
             }
             catch (RpcException x)
             {
-                resultLbl.Text = "Error! Server not found";
+                resultLbl.Text = "RPC Szerver nem elérhetõ!";
             }
 
         }
-
         private void deleteBtn_Click(object sender, EventArgs e)
         {
             try
@@ -223,31 +160,69 @@ namespace GRPCClient
             }
             catch (RpcException x)
             {
-                resultLbl.Text = "Error! Server not found";
+                resultLbl.Text = "RPC Szerver nem elérhetõ!";
             }
 
 
         }
+        private void loginBtn_Click(object sender, EventArgs e)
+        {
+            if ((userTxtBx.Text != "" || passTxtBx.Text != "" ) && uid == "N/A")
+            {
+                try
+                {
+                    User user = new User();
+                    user.Name = userTxtBx.Text;
+                    user.Password = passTxtBx.Text;
+                    Session_Id tempuid = client.Login(user);
+                    connStringLbl.Text = tempuid.ToString();
+                    if (tempuid.ToString().Contains("N/A"))
+                    {
+                        resultLbl.Text = "Bejelentkezés sikertelen";
+                    }
+                    else
+                    {
+                        string temp = tempuid.ToString();
+                        uid = temp.Substring(9, 36);
+                    }
+                }
+                catch (RpcException x)
+                {
+                    resultLbl.Text = "RPC Szerver nem elérhetõ!";
+                }
 
+            }
+        }
+        private void logoutBtn_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                Session_Id s = new Session_Id();
+                s.Id = uid;
+                Result res = client.Logout(s);
+                resultLbl.Text = res.ToString();
+                connStringLbl.Text = res.ToString();
+                uid = "N/A";
+            }
+            catch (RpcException x)
+            {
+                resultLbl.Text = "RPC Szerver nem elérhetõ!";
+            }
+        }
         private void registerBtn_Click(object sender, EventArgs e)
         {
             try
             {
-                if (registerUserTxtBx.Text != "" || registerPswrdTxtBx.Text != "")
-                {
                     User user = new User();
                     user.Name = registerUserTxtBx.Text;
                     user.Password = registerPswrdTxtBx.Text;
                     Result res = client.Register(user);
                     resultLbl.Text = res.ToString();
-                }
             }
             catch (RpcException x)
             {
-                resultLbl.Text = "Error! Server not found";
+                resultLbl.Text = "RPC Szerver nem elérhetõ!";
             }
-
-
         }
     }
 }

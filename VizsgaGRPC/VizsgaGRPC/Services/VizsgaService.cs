@@ -6,14 +6,12 @@ namespace VizsgaGRPC.Services
 {
     public class VizsgaService : Vizsga.VizsgaBase
     {
-
         List<Product> Products = new List<Product>();
         public override async Task List(Empty vmi, Grpc.Core.IServerStreamWriter<Product> responseStream, Grpc.Core.ServerCallContext context)
         {
-            
-            string query = "SELECT * FROM products";
             if (OpenConnection())
             {
+                string query = "SELECT * FROM products";
                 MySqlCommand cmd = new MySqlCommand(query,connection);
                 MySqlDataReader reader = cmd.ExecuteReader();
                 while (reader.Read())
@@ -32,10 +30,10 @@ namespace VizsgaGRPC.Services
             }
         } //Done
         public override Task<Result> Add(Data data, ServerCallContext context)
-        {
-            string query = "SELECT COUNT(*) FROM users WHERE session_string='" + data.Uid + "'";
+        {   
             if (this.OpenConnection())
             {
+                string query = "SELECT COUNT(*) FROM users WHERE session_string='" + data.Uid + "'";
                 MySqlCommand cmd = new MySqlCommand(query, connection);
                 int count = int.Parse(cmd.ExecuteScalar() + "");
                 if(count == 1)
@@ -69,7 +67,7 @@ namespace VizsgaGRPC.Services
                     }
                     else
                     {
-                        return Task.FromResult(new Result { Success = "Hibás ár!" });
+                        return Task.FromResult(new Result { Success = "Hibás ár! Minimum 1 Ft" });
                     }
                 }
                 else
@@ -80,14 +78,14 @@ namespace VizsgaGRPC.Services
             }
             else
             {
-                return Task.FromResult(new Result { Success = "Nem lehetett elérni az adatbázist!" }); //To-do lekezelni kliensen
+                return Task.FromResult(new Result { Success = "Nem lehetett elérni az adatbázist!" });
             }
         } //done
         public override Task<Result> Bid (BidProduct bid, ServerCallContext context)
         {
-            string query = "SELECT COUNT(*) FROM users WHERE session_string='" + bid.Uid + "'";
             if (this.OpenConnection())
             {
+                string query = "SELECT COUNT(*) FROM users WHERE session_string='" + bid.Uid + "'";
                 MySqlCommand cmd = new MySqlCommand(query, connection);
                 int count = int.Parse(cmd.ExecuteScalar() + "");
                 if (count == 1)
@@ -136,7 +134,7 @@ namespace VizsgaGRPC.Services
                             else
                             {
                                 CloseConnection();
-                                return Task.FromResult(new Result { Success = "Offer too low!" });
+                                return Task.FromResult(new Result { Success = "Túl alacsony ajánlat!" });
                             }
                         }
                     }
@@ -154,14 +152,14 @@ namespace VizsgaGRPC.Services
             }
             else
             {
-                return Task.FromResult(new Result { Success = "Nem lehetett elérni az adatbázist!" }); //To-do lekezelni kliensen
+                return Task.FromResult(new Result { Success = "Nem lehetett elérni az adatbázist!" });
             }
         } //done
         public override Task<Result> Modify(ModifyProduct product, ServerCallContext context) //done
         {
-            string query = "SELECT COUNT(*) FROM users WHERE session_string='" + product.Uid + "'";
             if (this.OpenConnection())
             {
+                string query = "SELECT COUNT(*) FROM users WHERE session_string='" + product.Uid + "'";
                 MySqlCommand cmd = new MySqlCommand(query, connection);
                 int count = int.Parse(cmd.ExecuteScalar() + "");
                 if (count == 1)
@@ -218,9 +216,9 @@ namespace VizsgaGRPC.Services
         }
         public override Task<Result> Delete(DeleteProduct product, ServerCallContext context) //done
         {
-            string query = "SELECT COUNT(*) FROM users WHERE session_string='" + product.Uid + "'";
             if (this.OpenConnection())
             {
+                string query = "SELECT COUNT(*) FROM users WHERE session_string='" + product.Uid + "'";
                 MySqlCommand cmd = new MySqlCommand(query, connection);
                 int count = int.Parse(cmd.ExecuteScalar() + "");
                 if(count == 1)
@@ -271,25 +269,26 @@ namespace VizsgaGRPC.Services
             }
             else
             {
-                return Task.FromResult(new Result { Success = "Nem lehetett elérni az adatbázist!" }); //To-do lekezelni kliensen
+                return Task.FromResult(new Result { Success = "Nem lehetett elérni az adatbázist!" });
             }
         }
         public override Task<Session_Id> Login(User user, ServerCallContext context) //done
         {
             string id = "";
-            string query = "SELECT COUNT(*) FROM users WHERE username='" + user.Name + "' AND password='" + user.Password + "'";
-            if(this.OpenConnection())
+            if (this.OpenConnection())
             {
-
+                string query = "SELECT COUNT(*) FROM users WHERE username='" + user.Name + "' AND password='" + user.Password + "'";
                 MySqlCommand cmd = new MySqlCommand(query,connection);
                 int count = int.Parse(cmd.ExecuteScalar()+"");
                 if(count == 1)
                 {
+                    //Session string a users-ben
                     id = Guid.NewGuid().ToString();
                     query = "UPDATE users SET session_string='" + id + "'WHERE username='"+user.Name + "'";
                     cmd = new MySqlCommand(query, connection);
                     cmd.ExecuteNonQuery();
 
+                    //session string a sessionstring-ben
                     query = "INSERT INTO sessionlogs (username, session_string) VALUES('" + user.Name + "','" + id + "')";
                     cmd = new MySqlCommand(query, connection);
                     cmd.ExecuteNonQuery();
@@ -300,20 +299,20 @@ namespace VizsgaGRPC.Services
                 else
                 {
                     this.CloseConnection();
-                    return Task.FromResult(new Session_Id { Id = "No" });
+                    return Task.FromResult(new Session_Id { Id = "N/A" });
                 }
             }
             else
             {
-                return Task.FromResult(new Session_Id { Id = "Nem lehetett elérni az adatbázist!" }); //To-do lekezelni kliensen
+                return Task.FromResult(new Session_Id { Id = "Nem lehetett elérni az adatbázist!" });
             }
 
         }
         public override Task<Result> Logout(Session_Id id, ServerCallContext context) //done
         {
-            string query = "SELECT COUNT(*) FROM users WHERE session_string='" + id.Id + "'";
             if (this.OpenConnection())
             {
+                string query = "SELECT COUNT(*) FROM users WHERE session_string='" + id.Id + "'";
                 MySqlCommand cmd = new MySqlCommand(query, connection);
                 int count = int.Parse(cmd.ExecuteScalar() + "");
                 if(count == 1)
@@ -331,7 +330,7 @@ namespace VizsgaGRPC.Services
             }
             else
             {
-                return Task.FromResult(new Result { Success = "Nem lehetett elérni az adatbázist!" }); //To-do lekezelni kliensen
+                return Task.FromResult(new Result { Success = "Nem lehetett elérni az adatbázist!" });
             }
 
         }
@@ -340,6 +339,11 @@ namespace VizsgaGRPC.Services
         {
             if (OpenConnection())
             {
+                if(user.Name == "" || user.Password == "")
+                {
+                    CloseConnection();
+                    return Task.FromResult(new Result { Success = "Hiba! Nincs adat!" });
+                }
                 string query = "SELECT COUNT(*) FROM users WHERE username='" + user.Name + "'";
                 MySqlCommand cmd = new MySqlCommand(query, connection);
                 int count = int.Parse(cmd.ExecuteScalar() + "");

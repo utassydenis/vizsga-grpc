@@ -1106,9 +1106,6 @@ namespace VizsgaGRPC {
     /// <summary>Field number for the "username" field.</summary>
     public const int UsernameFieldNumber = 4;
     private string username_ = "";
-    /// <summary>
-    ///ki rakta fel
-    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public string Username {
       get { return username_; }
@@ -1377,9 +1374,6 @@ namespace VizsgaGRPC {
     /// <summary>Field number for the "uid" field.</summary>
     public const int UidFieldNumber = 3;
     private string uid_ = "";
-    /// <summary>
-    ///session id
-    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public string Uid {
       get { return uid_; }
